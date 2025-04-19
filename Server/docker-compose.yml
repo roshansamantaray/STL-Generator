@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - shared-network
+
+  celery-worker:
+    build:
+      context: ./chat-ai-worker
+      dockerfile: Dockerfile
+    container_name: celery-worker
+    command: poetry run celery -A chat_ai_worker.celery_config worker --loglevel=info
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY}
+      - AZURE_OPENAI_API_BASE=${AZURE_OPENAI_API_BASE}
+    volumes:
+      - ./chat-ai-worker:/app
+    depends_on:
+      - redis
+    networks:
+      - shared-network
+
+  fastapi:
+    build:
+      context: ./chat-ai-fastapi
+      dockerfile: Dockerfile
+    container_name: fastapi
+    command: poetry run uvicorn chat_ai_fastapi.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_BROKER_URL=redis://redis:6379/0
+      - REDIS_BACKEND_URL=redis://redis:6379/1
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY}
+      - AZURE_OPENAI_API_BASE=${AZURE_OPENAI_API_BASE}
+    volumes:
+      - ./chat-ai-fastapi:/app
+    depends_on:
+      - redis
+      - celery-worker
+    networks:
+      - shared-network
+
+networks:
+  shared-network:
+    driver: bridge

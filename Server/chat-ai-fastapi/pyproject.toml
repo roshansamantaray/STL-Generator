@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "chat-ai-fastapi"
+version = "0.1.0"
+description = "A FastAPI-based Chat AI using Supabase and Tortoise ORM"
+authors = ["AllenNH <100822300+AllenNH@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.115.6"
+uvicorn = "^0.34.0"
+tortoise-orm = "^0.23.0"
+supabase = "^2.11.0"
+pydantic = "^2.10.5"
+
+
+python-dotenv = "^1.0.1"
+celery = "^5.4.0"
+redis = "^5.2.1"
+loguru = "^0.7.3"
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+black = "^24.10.0"
+isort = "^5.13.2"
+mypy = "^1.14.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+start = "chat_ai_fastapi.main:run"

@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "chat-ai-worker"
+version = "0.1.0"
+description = ""
+authors = ["AllenNH <100822300+AllenNH@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+celery = "^5.4.0"
+redis = "^5.2.1"
+loguru = "^0.7.3"
+python-dotenv = "^1.0.1"
+requests = "^2.32.3"
+numpy-stl = "^3.2.0"
+mesh = "^1.0.0a1"
+supabase = "^2.11.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

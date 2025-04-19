@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: poetry run uvicorn chat_ai_fastapi.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - REDIS_BROKER_URL=redis://host.docker.internal:6379/0
+      - REDIS_RESULT_BACKEND=redis://host.docker.internal:6379/1
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app  # Mount the current directory to the container
+      - /app/__pycache__/  # Ignore pycache files
